@@ -1,0 +1,64 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf190
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red170\green13\blue145;\red92\green38\blue153;\red38\green71\blue75;
+\red63\green110\blue116;\red100\green56\blue32;\red46\green13\blue110;\red196\green26\blue22;\red28\green0\blue207;
+}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\deftab529
+\pard\tx529\pardeftab529\pardirnatural
+
+\f0\fs22 \cf0 \CocoaLigature0 - (\cf2 void\cf0 )rotateSprite:(\cf3 SKSpriteNode\cf0  *)sprite\
+              toFace:(\cf3 CGPoint\cf0 )direction\
+ rotateRadiansPerSec:(\cf3 CGFloat\cf0 )rotateRadiansPerSec\
+\{\
+    \cf2 float\cf0  targetAngle = \cf4 CGPointToAngle\cf0 (\cf5 _velocity\cf0 );\
+    \cf2 float\cf0  shortest = \cf4 ScalarShortestAngleBetween\cf0 (sprite.\cf3 zRotation\cf0 , targetAngle);\
+    \cf2 float\cf0  amtToRotate = rotateRadiansPerSec * \cf5 _dt\cf0 ;\
+    \
+    \cf2 if\cf0  (\cf6 ABS\cf0 (shortest) < amtToRotate) \{\
+        amtToRotate = \cf6 ABS\cf0 (shortest);\
+    \}\
+    sprite.\cf3 zRotation\cf0  += \cf4 ScalarSign\cf0 (shortest) * amtToRotate;\
+  \}\
+\
+- (\cf2 void\cf0 )spawnEnemy\
+\{\
+    \cf3 SKSpriteNode\cf0  *enemy = [\cf3 SKSpriteNode\cf0  \cf7 spriteNodeWithImageNamed\cf0 :\cf8 @"enemy"\cf0 ];\
+    enemy.\cf3 position\cf0  = \cf7 CGPointMake\cf0 (\cf2 self\cf0 .\cf3 size\cf0 .\cf3 width\cf0  + enemy.\cf3 size\cf0 .\cf3 width\cf0 /\cf9 2\cf0 , \cf2 self\cf0 .\cf3 size\cf0 .\cf3 height\cf0 /\cf9 2\cf0 );\
+    [\cf2 self\cf0  \cf7 addChild\cf0 :enemy];\
+    \
+    \cf3 SKAction\cf0  *actionMove = [\cf3 SKAction\cf0  \cf7 moveToX\cf0 :-enemy.\cf3 size\cf0 .\cf3 width\cf0 /\cf9 2\cf0 \
+                                    \cf7 duration\cf0 :\cf9 2.0\cf0 ];\
+    [enemy \cf7 runAction\cf0 :actionMove];\
+\}\
+\
+\
+- (\cf2 void\cf0 )spawnEnemy\
+\{\
+    \cf3 SKSpriteNode\cf0  *enemy = [\cf3 SKSpriteNode\cf0  \cf7 spriteNodeWithImageNamed\cf0 :\cf8 @"enemy"\cf0 ];\
+    enemy.\cf3 position\cf0  = \cf7 CGPointMake\cf0 (\cf2 self\cf0 .\cf3 size\cf0 .\cf3 width\cf0  + enemy.\cf3 size\cf0 .\cf3 width\cf0 /\cf9 2\cf0 , \cf2 self\cf0 .\cf3 size\cf0 .\cf3 height\cf0 /\cf9 2\cf0 );\
+    [\cf2 self\cf0  \cf7 addChild\cf0 :enemy];\
+    \
+    \cf3 SKAction\cf0  *actionMidMove = [\cf3 SKAction\cf0  \cf7 moveByX\cf0 :-\cf2 self\cf0 .\cf3 size\cf0 .\cf3 width\cf0 /\cf9 2\cf0 -enemy.\cf3 size\cf0 .\cf3 width\cf0 /\cf9 2\cf0 \
+                                              \cf7 y\cf0 :-\cf2 self\cf0 .\cf3 size\cf0 .\cf3 height\cf0 /\cf9 2\cf0 +enemy.\cf3 size\cf0 .\cf3 height\cf0 /\cf9 2\cf0 \
+                                    \cf7 duration\cf0 :\cf9 3.0\cf0 ];\
+    \cf3 SKAction\cf0  *actionMove = [\cf3 SKAction\cf0  \cf7 moveByX\cf0 :-\cf2 self\cf0 .\cf3 size\cf0 .\cf3 width\cf0 /\cf9 2\cf0 -enemy.\cf3 size\cf0 .\cf3 width\cf0 /\cf9 2\cf0 \
+                                           \cf7 y\cf0 :\cf2 self\cf0 .\cf3 size\cf0 .\cf3 height\cf0 /\cf9 2\cf0 +enemy.\cf3 size\cf0 .\cf3 height\cf0 /\cf9 2\cf0 \
+                                   \cf7 duration\cf0 :\cf9 3.0\cf0 ];\
+    \cf3 SKAction\cf0  *wait = [\cf3 SKAction\cf0  \cf7 waitForDuration\cf0 :\cf9 1.0\cf0 ];\
+    \cf3 SKAction\cf0  *sequence = [\cf3 SKAction\cf0  \cf7 sequence\cf0 :\cf9 @[\cf0 actionMidMove, wait, actionMove\cf9 ]\cf0 ];\
+    sequence = [\cf3 SKAction\cf0  \cf7 sequence\cf0 :\cf9 @[\cf0 sequence,[sequence \cf7 reversedAction\cf0 ]\cf9 ]\cf0 ];\
+    \
+    \cf3 SKAction\cf0  *repeate = [\cf3 SKAction\cf0  \cf7 repeatActionForever\cf0 :sequence];\
+    [enemy \cf7 runAction\cf0 :repeate];\
+\}\
+\
+\
+--------------------------------------------\
+\
+- (\cf2 void\cf0 )touchesBegan:(\cf3 NSSet\cf0  *)touches withEvent:(\cf3 UIEvent\cf0  *)event\
+\{\
+    \cf3 SKScene\cf0  * myScene = [[\cf5 MyScene\cf0  \cf7 alloc\cf0 ] \cf7 initWithSize\cf0 :\cf2 self\cf0 .\cf3 size\cf0 ];\
+    \cf3 SKTransition\cf0  *reveal = [\cf3 SKTransition\cf0  \cf7 doorsOpenHorizontalWithDuration\cf0 :\cf9 0.5\cf0 ];\
+    [\cf2 self\cf0 .\cf3 view\cf0  \cf7 presentScene\cf0 :myScene \cf7 transition\cf0 :reveal];\
+\}}
